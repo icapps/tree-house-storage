@@ -1,7 +1,7 @@
 {
-  "name": "tree-house-boilerplate",
-  "version": "1.0.1",
-  "description": "Tree House Boilerplate",
+  "name": "tree-house-storage",
+  "version": "1.0.0",
+  "description": "Tree House Storage",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -18,9 +18,19 @@
   "precommit": [
     "lint"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "aws-sdk": "^2.424.0",
+    "multer": "^1.4.1",
+    "tree-house": "^3.4.2",
+    "tree-house-errors": "^1.2.2"
+  },
   "devDependencies": {
+    "@types/cors": "^2.8.4",
+    "@types/express-brute": "0.0.37",
+    "@types/helmet": "0.0.43",
     "@types/jest": "^23.3.13",
+    "@types/multer": "^1.3.7",
+    "@types/redis": "^2.8.11",
     "coveralls": "^3.0.2",
     "jest": "^24.0.0",
     "node-mocks-http": "^1.7.3",
@@ -41,13 +51,13 @@
   "keywords": [
     "tree House",
     "treehouse",
-    "treehouse boilerplate",
-    "treehouse boilerplate"
+    "treehouse storage",
+    "treehouse storage"
   ],
   "license": "ISC",
-  "repository": "git@github.com/icapps/tree-house-boilerplate.git",
+  "repository": "git@github.com/icapps/tree-house-storage.git",
   "bugs": {
-    "url": "https://github.com/icapps/tree-house-boilerplate/issues"
+    "url": "https://github.com/icapps/tree-house-storage/issues"
   },
-  "homepage": "https://github.com/icapps/tree-house-boilerplate/issues#readme"
+  "homepage": "https://github.com/icapps/tree-house-storage/issues#readme"
 }
