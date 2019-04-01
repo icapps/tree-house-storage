@@ -14,21 +14,36 @@ export function multipartUpload(options: MultipartOptions): multer.Instance {
     limits: {
       fileSize: options.fileSize,
     },
-    fileFilter: (req: any, file, next) => {
-      // Use validation middleware to check body schema
-      if (options.validator) {
-        validateSchema(options.validator.schema, options.validator.options)(req, {}, (error: Error) => {
-          if (error) return next(error, false);
-        });
-      }
-
-      if (!options.allowedFileTypes.includes(file.mimetype)) return next(new BadRequestError(errors.FILE_UPLOAD_ERROR), false);
-      next(null, true);
-    },
+    fileFilter: (req, file, next) => validateFile(req, file, next, options),
   });
 }
 
+/**
+ * Function to validate the incoming file
+ * @param {Object} req - Express request
+ * @param {Object} file - Express Multer File
+ * @callback multerFileFiltercb
+ * @param options- multipart options
+ */
+export function validateFile(req: Express.Request, file: Express.Multer.File, next: IMulterFileFilterCb, options: MultipartOptions): void {
+  try {
+    // Use validation middleware to check body schema
+    if (options.validator) {
+      validateSchema(options.validator.schema, options.validator.options)(req, {}, (error: Error) => {
+        if (error) throw error;
+      });
+    }
+
+    if (!options.allowedFileTypes.includes(file.mimetype)) throw new BadRequestError(errors.FILE_UPLOAD_ERROR);
+    next(null, true);
+  } catch (error) {
+    return next(error, false);
+  }
+}
+
 // Interfaces
+type IMulterFileFilterCb = (error: Error | null, acceptFile: boolean) => void;
+
 export interface MultipartOptions {
   destination: string;
   fileSize: number;

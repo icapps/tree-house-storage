@@ -1,0 +1,98 @@
+import * as fs from 'fs';
+import * as httpStatus from 'http-status';
+import { createClient, uploadFile, getPresignedUrl } from '../../src/lib/amazon';
+import { BadRequestError } from 'tree-house-errors';
+import { errors } from '../../src/config/error-config';
+import { validateError, NUM_ERROR_CHECKS } from '../_helpers/util';
+
+describe('amazon', () => {
+  const s3PromiseMock = jest.fn();
+  const result = 'https://secure-resourceurl.com';
+
+  const awsClient = <any>{
+    upload: jest.fn(() => ({ promise: s3PromiseMock })),
+    getSignedUrl: jest.fn(() => (result)),
+  };
+
+  afterEach(() => {
+    s3PromiseMock.mockClear();
+  });
+
+  describe('createClient', () => {
+    it('Should succesfully create an S3 client', () => {
+      const client = createClient({
+        region: 'belgium',
+        accessKeyId: '1',
+        secretAccessKey: 'secret',
+      });
+
+      expect(client.config).toMatchObject({
+        accessKeyId: '1',
+        region: 'belgium',
+        secretAccessKey: 'secret',
+      });
+    });
+  });
+
+  describe('uploadFile', () => {
+    beforeAll(() => {
+      fs.writeFileSync('./uploadtest.txt', 'upload this pls', 'utf8');
+    });
+
+    afterAll(() => {
+      fs.unlinkSync('./uploadtest.txt');
+    });
+
+    it('Should succesfully upload the file to Amazon S3', async () => {
+      s3PromiseMock.mockResolvedValueOnce({
+        Location: 'http://s3.file.com',
+        Bucket: 'bucket',
+        Key: 'key',
+      });
+
+      await uploadFile(awsClient, {
+        path: './uploadtest.txt',
+        contentType: 'image/png',
+        bucket: 'bucket',
+        key: 'key',
+        encryption: 'AE-256',
+      });
+
+      expect(s3PromiseMock).toBeCalledTimes(1);
+    });
+
+    it('Should throw a custom error', async () => {
+      s3PromiseMock.mockRejectedValueOnce(<any> Error('random error occured'));
+
+      expect.assertions(NUM_ERROR_CHECKS);
+      try {
+        await uploadFile(awsClient, {
+          path: './uploadtest.txt',
+          contentType: 'image/png',
+          bucket: 'bucket',
+          key: 'key',
+          encryption: 'AE-256',
+        });
+      } catch (error) {
+        validateError(error, httpStatus.BAD_REQUEST, errors.FILE_UPLOAD_ERROR.code, 'random error occured');
+      }
+    });
+  });
+
+  describe('getPresignedUrl', () => {
+    it('Should succesfully return the pre-signed url', async () => {
+      const resourceUrl = await getPresignedUrl(awsClient, { bucket: 'bucket', key: 'key' });
+      expect(resourceUrl).toEqual(result);
+    });
+
+    it('Should throw an error when something unexpected goes wrong', async () => {
+      jest.spyOn(awsClient, 'getSignedUrl').mockRejectedValueOnce('error');
+      try {
+        await getPresignedUrl(awsClient, { bucket: 'bucket', key: 'key' });
+      } catch (error) {
+        expect(error).toBeInstanceOf(BadRequestError);
+        expect(error.message).toEqual(errors.FILE_PRESIGNED_URL_ERROR.message);
+      }
+    });
+  });
+});
