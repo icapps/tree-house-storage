@@ -4,6 +4,7 @@ import { errors } from '../config/error-config';
 
 /**
  * Check if folder exists and create if not
+ * @param {String} path filepath
  */
 export function createIfNotExists(path: string) {
   if (!fs.existsSync(path)) return fs.mkdirSync(path);
@@ -11,6 +12,10 @@ export function createIfNotExists(path: string) {
 
 /**
  * Create a new file
+ * @param {String} path filepath
+ * @param {String} name filename
+ * @param {Any} content file content
+ * @returns {String} path where the file is stored
  */
 export function createFile(path: string, name: string, content: any): string {
   createIfNotExists(path);
@@ -20,6 +25,7 @@ export function createFile(path: string, name: string, content: any): string {
 
 /**
  * Return a readstream from a filepath
+ * @param {String} path filepath
  */
 export function readFile(path: string): Promise<fs.ReadStream> {
   return new Promise((resolve, reject) => {
@@ -32,6 +38,7 @@ export function readFile(path: string): Promise<fs.ReadStream> {
 
 /**
  * Delete an existing file from a filepath
+ * @param {String} path filepath
  */
 export function deleteFile(path: string): void {
   try {

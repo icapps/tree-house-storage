@@ -1,13 +1,15 @@
 import * as S3 from 'aws-sdk/clients/s3';
 import * as AWS from 'aws-sdk';
-import { readFile } from './file-system';
 import { BadRequestError } from 'tree-house-errors';
 import { errors } from '../config/error-config';
+import { readFile } from './local';
 
 /**
  * Create the S3 client
+ * @param {Object} clientOptions
+ * @returns {Object} amazon client instance
  */
-export function createS3Client(clientOptions: ClientOptions): AWS.S3 {
+export function createClient(clientOptions: IClientS3Options): AWS.S3 {
   const { region, accessKeyId, secretAccessKey } = clientOptions;
   return new S3({
     region,
@@ -18,20 +20,32 @@ export function createS3Client(clientOptions: ClientOptions): AWS.S3 {
 
 /**
  * Upload a file to S3 storage
+ * @param {Object} client existing s3 client
+ * @param {Object} options s3 upload file options
+ * @returns {Object} file response from aws
  */
-export async function uploadFile(options: UploadFileOptions, client: FileClient): Promise<S3.ManagedUpload.SendData> {
+export async function uploadFile(client: AWS.S3, options: IUploadS3Options): Promise<IUploadS3Result> {
   try {
     const fileStream = await readFile(options.path);
 
     const params: S3.PutObjectRequest = {
-      ...(options.ServerSideEncryption && { ServerSideEncryption: options.ServerSideEncryption }),
       Bucket: options.bucket,
       Key: options.key,
       Body: fileStream,
       ContentType: options.contentType,
     };
 
-    return await client.upload(params).promise();
+    // Optional encryption
+    if (options.encryption) {
+      params.ServerSideEncryption = options.encryption;
+    }
+
+    const result = await client.upload(params).promise();
+    return {
+      url: result.Location,
+      bucket: result.Bucket,
+      key: result.Key,
+    };
   } catch (error) {
     throw new BadRequestError(errors.FILE_UPLOAD_ERROR, { message: error.message });
   }
@@ -39,40 +53,48 @@ export async function uploadFile(options: UploadFileOptions, client: FileClient)
 
 /**
  * Get a pre-signed url
+ * @param {Object} client existing s3 client
+ * @param {Object} options s3 options
+ * @returns {String} presigned url
  */
-export async function getObjectViaPresignedUrl(client: AWS.S3, params: {Bucket: string, Key: string, Expires?: number}): Promise<any> {
+export async function getPresignedUrl(client: AWS.S3, options: IPresignedS3Options): Promise<string> {
   try {
-    console.log(client);
+    const params = {
+      Bucket: options.bucket,
+      Key: options.key,
+      Expires: options.expires,
+    };
+
     return await client.getSignedUrl('getObject', params);
   } catch (error) {
-    throw new Error('Error in get object via presigned url');
+    throw new BadRequestError(errors.FILE_PRESIGNED_URL_ERROR, { message: error.message });
   }
 }
 
 // Interfaces
-export interface UploadFileOptions {
+export interface IClientS3Options {
+  region: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+}
+
+export interface IUploadS3Options {
   path: string;
   name: string;
   contentType: string;
   bucket: string;
   key: string;
-  ServerSideEncryption?: string;
+  encryption?: string;
 }
 
-export interface FileClient {
-  upload: (params: S3.Types.PutObjectRequest) => ({
-    promise: () => Promise<S3.ManagedUpload.SendData>,
-  });
-  getObject: (params: S3.Types.GetObjectRequest) => ({
-    promise: () => Promise<S3.Types.GetObjectOutput>,
-  });
-  deleteObject: (params: S3.Types.DeleteObjectRequest) => ({
-    promise: () => Promise<S3.DeleteObjectOutput>,
-  });
+export interface IUploadS3Result {
+  url: string;
+  bucket: string;
+  key: string;
 }
 
-export interface ClientOptions {
-  region: string;
-  accessKeyId: string;
-  secretAccessKey: string;
+export interface IPresignedS3Options {
+  bucket: string;
+  key: string;
+  expires?: number;
 }

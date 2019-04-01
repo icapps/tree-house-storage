@@ -4,9 +4,11 @@ import { BadRequestError } from 'tree-house-errors';
 import { errors } from '../config/error-config';
 
 /**
- * File uploader middleware
+ * Middleware function using multer with extra file filter options
+ * @param {Object} options multipart options
+ * @returns {Object} multer instance
  */
-export function createMultipartUploader(options: MultipartOptions): multer.Instance {
+export function multipartUpload(options: MultipartOptions): multer.Instance {
   return multer({
     dest: options.destination,
     limits: {

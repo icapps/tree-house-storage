@@ -7,46 +7,134 @@ NodeJS storage utility module written in Typescript
 [![Build Status](https://travis-ci.org/icapps/tree-house-storage.svg?branch=master)](https://travis-ci.org/icapps/tree-house-storage)
 [![Coverage Status](https://coveralls.io/repos/github/icapps/tree-house-storage/badge.svg)](https://coveralls.io/github/icapps/tree-house-storage)
 
+## Installation
+
+Install via npm
+
+```shell
+npm install tree-house-storage
+```
+
+or via yarn
+
+```shell
+yarn add tree-house-storage
+```
+
 ## Usage
 
-## File-upload
+## Middleware functions
 
-### createMultipartUploader(options)
+### multipartUpload(options)
 
-Create a multipart upload middleware
+Express middleware function to upload a local file using multer.
 
-## Amazon
+```javascript
+import { middleware } from 'tree-house-storage'
 
-Amazon S3 wrapper methods
+const options = {
+  destination: 'uploads',
+  fileSize: 12000,
+  allowedFileTypes: ['image/png', 'image/jpg'],
+  
+  // Optional Joi schema validation for other body data
+  validator: {
+    schema: joiSchema,
+    options: joiOptions,
+  };
+};
 
-### createS3Client(clientOptions)
+app.post('/upload', middleware.multipartUpload(options), ...);
+```
 
-Creates an S3 client
+[More information on Multer](https://github.com/expressjs/multer)
 
-### uploadFile(options, client)
+## Local filesystem
 
-Uploads a file to S3
+Local file functions enabling the use of Promises for `fs` methods.
 
-### getObjectViaPresignedUrl(client, params)
-
-Gets a pre-signed url for an S3 resource
-
-## FileSystem
-
-File system wrapper methods
+[More information on fs](https://nodejs.org/api/fs.html)
 
 ### createFile(path, name, content)
 
-Creates a file
+Creates a new local file. This will also create a folder when it does not exist already. (*Synchronous*)
+
+```javascript
+import { local } from 'tree-house-storage'
+local.createFile('/localFolder', 'myFile.txt', 'My personal content');
+```
 
 ### readFile(path)
 
-Reads a file
+Read an existing local file via filepath. (*Asynchronous*)
+
+```javascript
+import { local } from 'tree-house-storage'
+await local.readFile('/localFolder', 'myFile.txt', 'My personal content');
+```
 
 ### deleteFile(path)
 
-Deletes a file 
+Delete an existing local file via filepath (*Synchronous*)
 
+```javascript
+import { local } from 'tree-house-storage'
+await local.deleteFile('/localFolder/myFile.txt');
+```
+
+## Amazon
+
+Amazon S3 libs
+
+[More information on AWS S3](https://aws.amazon.com/sdk-for-node-js/)
+
+### createClient(clientOptions)
+
+Create an S3 client
+
+```javascript
+import { amazon } from 'tree-house-storage'
+
+const options = {
+  region: 'eu-west-1',
+  accessKeyId: 'myAccesKey',
+  secretAccessKey: 'mySecret',
+};
+const client = amazon.createClient(options);
+```
+
+### uploadFile(client, options)
+
+Upload a file to S3
+
+```javascript
+import { amazon } from 'tree-house-storage'
+
+const options = {
+  path: 'localPath/localFile.png',
+  name: uuid.v4(),
+  contentType: 'image/png',
+  bucket: 's3bucketName',
+  key: 's3KeyName',
+  encryption: 'AE-256', // Optional encryption (this will enable server encryption on S3)
+};
+const { location, bucket, key } = amazon.uploadFile(client, options);
+```
+
+### getPresignedUrl(client, options)
+
+Gets a pre-signed url for an S3 resource
+
+```javascript
+import { amazon } from 'tree-house-storage'
+
+const options = {
+  bucket: 's3bucketName',
+  key: 's3KeyName',
+  expires: 1600, // Optional expiration time
+};
+const { location, bucket, key } = amazon.getPresignedUrl(client, options);
+```
 
 ## Tests
 
@@ -60,7 +148,7 @@ All tests are written using Jest. Check out the documentation [here](https://jes
 
 When you find issues, please report them:
 
-- web: [https://github.com/icapps/tree-house-boilerplate/issues](https://github.com/icapps/tree-house-storage/issues)
+- web: [https://github.com/icapps/tree-house-storage/issues](https://github.com/icapps/tree-house-storage/issues)
 
 Be sure to include all of the output from the npm command that didn't work as expected. The npm-debug.log file is also helpful to provide.
 

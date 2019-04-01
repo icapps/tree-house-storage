@@ -1,7 +1,7 @@
-import * as fileSystemService from './lib/file-system';
-import * as fileUploadService from './lib/file-upload';
+import * as middlewareService from './lib/middleware';
+import * as localService from './lib/local';
 import * as amazonService from './lib/amazon';
 
-export const fileSystem = fileSystemService;
-export const fileUpload = fileUploadService;
+export const middleware = middlewareService;
+export const local = localService;
 export const amazon = amazonService;
