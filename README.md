@@ -1,49 +1,52 @@
-# Treehouse boilerplate
+# Treehouse storage
 
-NodeJS boilerplate module written in typescript
+NodeJS storage utility module written in Typescript
 
-[![npm version](https://badge.fury.io/js/tree-house-boilerplate.svg)](https://badge.fury.io/js/tree-house-boilerplate)
-[![Dependencies](https://david-dm.org/icapps/tree-house-boilerplate.svg)](https://david-dm.org/icapps/tree-house-boilerplate.svg)
-[![Build Status](https://travis-ci.org/icapps/tree-house-boilerplate.svg?branch=master)](https://travis-ci.org/icapps/tree-house-boilerplate)
-[![Coverage Status](https://coveralls.io/repos/github/icapps/tree-house-boilerplate/badge.svg)](https://coveralls.io/github/icapps/tree-house-boilerplate)
+[![npm version](https://badge.fury.io/js/tree-house-storage.svg)](https://badge.fury.io/js/tree-house-storage)
+[![Dependencies](https://david-dm.org/icapps/tree-house-storage.svg)](https://david-dm.org/icapps/tree-house-storage.svg)
+[![Build Status](https://travis-ci.org/icapps/tree-house-storage.svg?branch=master)](https://travis-ci.org/icapps/tree-house-storage)
+[![Coverage Status](https://coveralls.io/repos/github/icapps/tree-house-storage/badge.svg)](https://coveralls.io/github/icapps/tree-house-storage)
 
 ## Usage
 
-### Clone this project
+## File-upload
 
-```shell
-git clone git@github.com:icapps/tree-house-boilerplate.git
-```
+### createMultipartUploader(options)
 
-> Copy code to new git project, commit and start making your new module
+Create a multipart upload middleware
 
-## Typescript
+## Amazon
 
-The project is written in Typescript. More information can be found [here](https://www.typescriptlang.org/).
+Amazon S3 wrapper methods
 
-## TSlint
+### createS3Client(clientOptions)
 
-TSLint is an extensible static analysis tool that checks TypeScript code for readability, maintainability, and functionality errors. It is widely supported across modern editors & build systems and can be customized with your own lint rules, configurations, and formatters. More information can be found [here](https://palantir.github.io/tslint/).
+Creates an S3 client
 
-## NPM
+### uploadFile(options, client)
 
-Node Package Manager has been integrated to publish the package afterwards. Npm is the package manager for JavaScript and the world's largest software registry. This way these modules can be used within the actual NodeJS project using `npm install`.
+Uploads a file to S3
 
-### Release
+### getObjectViaPresignedUrl(client, params)
 
-Releasing a new version of the module has been made easy using [np](https://www.npmjs.com/package/np).
+Gets a pre-signed url for an S3 resource
 
-```shell
-npm run release
-```
+## FileSystem
 
-## Travis CI
+File system wrapper methods
 
-Travis CI is a hosted, distributed continuous integration service used to build and test software projects hosted at GitHub. There is a `.travis.yml` file included in the boilerplate. You still need to enable the module in [Travis CI](https://travis-ci.org/). This will allow you to run your tests and other checks for commits, pull requests and or merges automatically.
+### createFile(path, name, content)
 
-## Coveralls
+Creates a file
 
-Ensure that all your new code is fully covered, and see coverage trends emerge. Works with any CI service. This way you can track the coverage progress for each commit and/or branch in a visual overview. You still need to enable the module in [Coveralls.io](https://coveralls.io/). It will automatically be trigged as the last step in Travis CI described in the `.travis.yml` file.
+### readFile(path)
+
+Reads a file
+
+### deleteFile(path)
+
+Deletes a file 
+
 
 ## Tests
 
@@ -57,13 +60,13 @@ All tests are written using Jest. Check out the documentation [here](https://jes
 
 When you find issues, please report them:
 
-- web: [https://github.com/icapps/tree-house-boilerplate/issues](https://github.com/icapps/tree-house-boilerplate/issues)
+- web: [https://github.com/icapps/tree-house-boilerplate/issues](https://github.com/icapps/tree-house-storage/issues)
 
 Be sure to include all of the output from the npm command that didn't work as expected. The npm-debug.log file is also helpful to provide.
 
 ## Authors
 
-See the list of [contributors](https://github.com/icapps/tree-house-boilerplate/contributors) who participated in this project.
+See the list of [contributors](https://github.com/icapps/tree-house-storage/contributors) who participated in this project.
 
 ## License
 
