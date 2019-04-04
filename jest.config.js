@@ -20,6 +20,7 @@ module.exports = {
     "\\.(ts|tsx)$": "ts-jest"
   },
   testRegex: "/tests/.*\\.(ts|tsx|js)$",
+  testPathIgnorePatterns: ['/tests/_helpers'],
   coveragePathIgnorePatterns: [
     '/node_modules/',
     'src/index.ts',

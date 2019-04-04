@@ -1,5 +1,4 @@
 import * as S3 from 'aws-sdk/clients/s3';
-import * as AWS from 'aws-sdk';
 import { BadRequestError } from 'tree-house-errors';
 import { errors } from '../config/error-config';
 import { readFile } from './local';
@@ -9,7 +8,7 @@ import { readFile } from './local';
  * @param {Object} clientOptions
  * @returns {Object} amazon client instance
  */
-export function createClient(clientOptions: IClientS3Options): AWS.S3 {
+export function createClient(clientOptions: IClientS3Options): S3 {
   const { region, accessKeyId, secretAccessKey } = clientOptions;
   return new S3({
     region,
@@ -24,7 +23,7 @@ export function createClient(clientOptions: IClientS3Options): AWS.S3 {
  * @param {Object} options s3 upload file options
  * @returns {Object} file response from aws
  */
-export async function uploadFile(client: AWS.S3, options: IUploadS3Options): Promise<IUploadS3Result> {
+export async function uploadFile(client: S3, options: IUploadS3Options): Promise<IUploadS3Result> {
   try {
     const fileStream = await readFile(options.path);
 
@@ -57,7 +56,7 @@ export async function uploadFile(client: AWS.S3, options: IUploadS3Options): Pro
  * @param {Object} options s3 options
  * @returns {String} presigned url
  */
-export async function getPresignedUrl(client: AWS.S3, options: IPresignedS3Options): Promise<string> {
+export async function getPresignedUrl(client: S3, options: IPresignedS3Options): Promise<string> {
   try {
     const params = {
       Bucket: options.bucket,
@@ -80,7 +79,6 @@ export interface IClientS3Options {
 
 export interface IUploadS3Options {
   path: string;
-  name: string;
   contentType: string;
   bucket: string;
   key: string;
