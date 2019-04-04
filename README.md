@@ -5,7 +5,7 @@ NodeJS storage utility module written in Typescript
 [![npm version](https://badge.fury.io/js/tree-house-storage.svg)](https://badge.fury.io/js/tree-house-storage)
 [![Dependencies](https://david-dm.org/icapps/tree-house-storage.svg)](https://david-dm.org/icapps/tree-house-storage.svg)
 [![Build Status](https://travis-ci.org/icapps/tree-house-storage.svg?branch=master)](https://travis-ci.org/icapps/tree-house-storage)
-[![Coverage Status](https://coveralls.io/repos/github/icapps/tree-house-storage/badge.svg)](https://coveralls.io/github/icapps/tree-house-storage)
+[![Coverage Status](https://coveralls.io/repos/github/icapps/tree-house-storage/badge.svg)](https://coveralls.io/github/icapps/tree-house-storage) [![Greenkeeper badge](https://badges.greenkeeper.io/icapps/tree-house-storage.svg)](https://greenkeeper.io/)
 
 ## Installation
 

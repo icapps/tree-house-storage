@@ -20,7 +20,7 @@
     "build"
   ],
   "dependencies": {
-    "aws-sdk": "~2.432.0",
+    "aws-sdk": "~2.435.0",
     "multer": "~1.4.1",
     "tree-house": "~3.4.2",
     "tree-house-errors": "~1.2.2"
@@ -38,7 +38,7 @@
     "node-mocks-http": "^1.7.3",
     "np": "^4.0.2",
     "pre-commit": "^1.2.2",
-    "supertest": "^3.4.2",
+    "supertest": "^4.0.2",
     "ts-jest": "^24.0.1",
     "tslint": "^5.14.0",
     "tslint-config-airbnb": "^5.11.1",
