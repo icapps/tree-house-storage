@@ -70,6 +70,22 @@ export async function getPresignedUrl(client: S3, options: IPresignedS3Options):
   }
 }
 
+/**
+ * Checks if the resource exists on the S3 bucket
+ * @param {Object} client existing s3 client
+ * @param {Object} options s3 options
+ * @returns {boolean} resource exists or not
+ */
+export async function resourceExists(client: S3, params: {bucket: string, key: string}): Promise<boolean> {
+  const { bucket, key } = params;
+  return new Promise((resolve, _reject) => {
+    client.headObject({ Bucket: bucket, Key: key }, (err, _data) => {
+      if (err) return resolve(false);
+      return resolve(true);
+    });
+  });
+}
+
 // Interfaces
 export interface IClientS3Options {
   region: string;

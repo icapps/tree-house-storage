@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as httpStatus from 'http-status';
-import { createClient, uploadFile, getPresignedUrl } from '../../src/lib/amazon';
+import { createClient, uploadFile, getPresignedUrl, resourceExists } from '../../src/lib/amazon';
 import { BadRequestError } from 'tree-house-errors';
 import { errors } from '../../src/config/error-config';
 import { validateError, NUM_ERROR_CHECKS } from '../_helpers/util';
@@ -9,9 +9,12 @@ describe('amazon', () => {
   const s3PromiseMock = jest.fn();
   const result = 'https://secure-resourceurl.com';
 
+  const mockMetaCallback = jest.fn();
+
   const awsClient = <any>{
     upload: jest.fn(() => ({ promise: s3PromiseMock })),
     getSignedUrl: jest.fn(() => (result)),
+    headObject: mockMetaCallback,
   };
 
   afterEach(() => {
@@ -93,6 +96,22 @@ describe('amazon', () => {
         expect(error).toBeInstanceOf(BadRequestError);
         expect(error.message).toEqual(errors.FILE_PRESIGNED_URL_ERROR.message);
       }
+    });
+  });
+
+  describe('resourceExists', () => {
+    it('Should return true when the resource exists', async () => {
+      mockMetaCallback.mockImplementationOnce((_params, cb) => cb(null, 'data'));
+
+      const result = await resourceExists(awsClient, { bucket: 'bucket', key: 'key' });
+      expect(result).toEqual(true);
+    });
+
+    it('Should return false when the resource does not exist', async () => {
+      mockMetaCallback.mockImplementationOnce((_params, cb) => cb(new Error('Error'), null));
+
+      const result = await resourceExists(awsClient, { bucket: 'bucket', key: 'key' });
+      expect(result).toEqual(false);
     });
   });
 });
