@@ -2,7 +2,7 @@
 
 NodeJS storage utility module written in Typescript
 
-[![npm version](https://badge.fury.io/js/tree-house-storage.svg)](https://badge.fury.io/js/tree-house-storage)
+[![npm version](https://badge.fury.io/js/%40icapps%2Ftree-house-storage.svg)](https://badge.fury.io/js/%40icapps%2Ftree-house-storage)
 [![Dependencies](https://david-dm.org/icapps/tree-house-storage.svg)](https://david-dm.org/icapps/tree-house-storage.svg)
 [![Build Status](https://travis-ci.org/icapps/tree-house-storage.svg?branch=master)](https://travis-ci.org/icapps/tree-house-storage)
 [![Coverage Status](https://coveralls.io/repos/github/icapps/tree-house-storage/badge.svg)](https://coveralls.io/github/icapps/tree-house-storage) [![Greenkeeper badge](https://badges.greenkeeper.io/icapps/tree-house-storage.svg)](https://greenkeeper.io/)
@@ -12,13 +12,13 @@ NodeJS storage utility module written in Typescript
 Install via npm
 
 ```shell
-npm install tree-house-storage
+npm install @icapps/tree-house-storage
 ```
 
 or via yarn
 
 ```shell
-yarn add tree-house-storage
+yarn add @icapps/tree-house-storage
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ yarn add tree-house-storage
 Express middleware function to upload a local file using multer.
 
 ```javascript
-import { middleware } from 'tree-house-storage'
+import { middleware } from '@icapps/tree-house-storage'
 
 const options = {
   destination: 'uploads',
@@ -55,13 +55,22 @@ Local file functions enabling the use of Promises for `fs` methods.
 
 [More information on fs](https://nodejs.org/api/fs.html)
 
-### createFile(path, name, content)
+### createIfNotExists(path)
 
-Creates a new local file. This will also create a folder when it does not exist already. (*Synchronous*)
+Creates a folder if it doesn't exist already. (*Asynchronous*)
 
 ```javascript
-import { local } from 'tree-house-storage'
-local.createFile('/localFolder', 'myFile.txt', 'My personal content');
+import { local } from '@icapps/tree-house-storage'
+await local.createIfNotExists('/localFolder');
+```
+
+### createFile(path, name, content)
+
+Creates a new local file. This will also create a folder when it does not exist already. (*Asynchronous*)
+
+```javascript
+import { local } from '@icapps/tree-house-storage'
+await local.createFile('/localFolder', 'myFile.txt', 'My personal content');
 ```
 
 ### readFile(path)
@@ -69,16 +78,16 @@ local.createFile('/localFolder', 'myFile.txt', 'My personal content');
 Read an existing local file via filepath. (*Asynchronous*)
 
 ```javascript
-import { local } from 'tree-house-storage'
+import { local } from '@icapps/tree-house-storage'
 await local.readFile('/localFolder', 'myFile.txt', 'My personal content');
 ```
 
 ### deleteFile(path)
 
-Delete an existing local file via filepath (*Synchronous*)
+Delete an existing local file via filepath (*Asynchronous*)
 
 ```javascript
-import { local } from 'tree-house-storage'
+import { local } from '@icapps/tree-house-storage'
 await local.deleteFile('/localFolder/myFile.txt');
 ```
 
@@ -93,7 +102,7 @@ Amazon S3 libs
 Create an S3 client
 
 ```javascript
-import { amazon } from 'tree-house-storage'
+import { amazon } from '@icapps/tree-house-storage'
 
 const options = {
   region: 'eu-west-1',
@@ -108,7 +117,7 @@ const client = amazon.createClient(options);
 Upload a file to S3
 
 ```javascript
-import { amazon } from 'tree-house-storage'
+import { amazon } from '@icapps/tree-house-storage'
 
 const options = {
   path: 'localPath/localFile.png',
@@ -126,7 +135,7 @@ const { location, bucket, key } = amazon.uploadFile(client, options);
 Gets a pre-signed url for an S3 resource
 
 ```javascript
-import { amazon } from 'tree-house-storage'
+import { amazon } from '@icapps/tree-house-storage'
 
 const options = {
   bucket: 's3bucketName',

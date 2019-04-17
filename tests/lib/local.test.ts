@@ -7,9 +7,10 @@ describe('local', () => {
     it('Should create a folder if not already exists', async () => {
       const folderPath = 'tests/randomFolder';
 
-      createIfNotExists(folderPath);
+      await createIfNotExists(folderPath);
 
-      expect(fs.existsSync(folderPath)).toBeTruthy();
+      const exists = fs.existsSync(folderPath);
+      expect(exists).toBeTruthy();
       fs.rmdirSync(folderPath);
     });
   });
@@ -43,7 +44,7 @@ describe('local', () => {
     it('Should throw an error when file is not found', async () => {
       expect.assertions(2);
       try {
-        deleteFile('tests/fakeFolder/notExisting.pdf');
+        await deleteFile('tests/fakeFolder/notExisting.pdf');
       } catch (error) {
         expect(error.code).toEqual(errors.FILE_READ_ERROR.code);
         expect(error.message).toEqual(errors.FILE_READ_ERROR.message);
@@ -56,8 +57,8 @@ describe('local', () => {
       fs.unlinkSync('./testfile.txt');
     });
 
-    it('Should succesfully create a file', () => {
-      createFile('./', 'testfile.txt', 'content');
+    it('Should succesfully create a file', async () => {
+      await createFile('./', 'testfile.txt', 'content');
 
       const fileContent = fs.readFileSync('./testfile.txt', 'utf8');
       expect(fileContent).toEqual('content');
