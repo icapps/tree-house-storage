@@ -7,10 +7,25 @@ describe('local', () => {
     it('Should create a folder if not already exists', async () => {
       const folderPath = 'tests/randomFolder';
 
-      createIfNotExists(folderPath);
+      await createIfNotExists(folderPath);
 
-      expect(fs.existsSync(folderPath)).toBeTruthy();
+      const exists = fs.existsSync(folderPath);
+      expect(exists).toBeTruthy();
       fs.rmdirSync(folderPath);
+    });
+
+    it('Should throw an error when invalid folder was provided', async () => {
+      const fsSpy = jest.spyOn(fs, 'mkdir').mockImplementationOnce((_path, cb) => cb(new Error('ErrorDuringMkDir')));
+
+      expect.assertions(2);
+      try {
+        await createIfNotExists('tests/testFolder');
+      } catch (error) {
+        expect(fsSpy).toHaveBeenCalledTimes(1);
+        expect(error.message).toEqual('ErrorDuringMkDir');
+      }
+
+      fsSpy.mockClear();
     });
   });
 
@@ -40,10 +55,15 @@ describe('local', () => {
   });
 
   describe('deleteFile', () => {
+    it('Should succesfully delete file', async () => {
+      fs.writeFileSync('test.txt', 'content');
+      await deleteFile('test.txt');
+    });
+
     it('Should throw an error when file is not found', async () => {
       expect.assertions(2);
       try {
-        deleteFile('tests/fakeFolder/notExisting.pdf');
+        await deleteFile('tests/fakeFolder/notExisting.pdf');
       } catch (error) {
         expect(error.code).toEqual(errors.FILE_READ_ERROR.code);
         expect(error.message).toEqual(errors.FILE_READ_ERROR.message);
@@ -56,11 +76,25 @@ describe('local', () => {
       fs.unlinkSync('./testfile.txt');
     });
 
-    it('Should succesfully create a file', () => {
-      createFile('./', 'testfile.txt', 'content');
+    it('Should succesfully create a file', async () => {
+      await createFile('./', 'testfile.txt', 'content');
 
       const fileContent = fs.readFileSync('./testfile.txt', 'utf8');
       expect(fileContent).toEqual('content');
+    });
+
+    it('Should throw an error when invalid folder was provided', async () => {
+      const fsSpy = jest.spyOn(fs, 'writeFile').mockImplementationOnce((_name, _content, cb) => cb(new Error('ErrorDuringWrite')));
+
+      expect.assertions(2);
+      try {
+        await createFile('./', 'testfile.txt', 'content');
+      } catch (error) {
+        expect(fsSpy).toHaveBeenCalledTimes(1);
+        expect(error.message).toEqual('ErrorDuringWrite');
+      }
+
+      fsSpy.mockClear();
     });
   });
 });

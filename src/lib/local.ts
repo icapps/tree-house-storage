@@ -2,12 +2,25 @@ import * as fs from 'fs';
 import { BadRequestError } from 'tree-house-errors';
 import { errors } from '../config/error-config';
 
+export function exists(path: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    return fs.exists(path, found => found ? resolve(true) : resolve(false));
+  });
+}
+
 /**
  * Check if folder exists and create if not
  * @param {String} path filepath
  */
-export function createIfNotExists(path: string) {
-  if (!fs.existsSync(path)) return fs.mkdirSync(path);
+export async function createIfNotExists(path: string) {
+  const existingPath = await exists(path);
+
+  return new Promise((resolve, reject) => {
+    if (!existingPath) {
+      return fs.mkdir(path, error => error ? reject(error) : resolve());
+    }
+    resolve();
+  });
 }
 
 /**
@@ -17,10 +30,14 @@ export function createIfNotExists(path: string) {
  * @param {Any} content file content
  * @returns {String} path where the file is stored
  */
-export function createFile(path: string, name: string, content: any): string {
-  createIfNotExists(path);
-  fs.writeFileSync(`${path}/${name}`, content);
-  return `${path}/${name}`;
+export async function createFile(path: string, name: string, content: any): Promise<string> {
+  await createIfNotExists(path);
+
+  return new Promise((resolve, reject) => {
+    fs.writeFile(`${path}/${name}`, content, (error) => {
+      return error ? reject(error) : resolve(`${path}/${name}`);
+    });
+  });
 }
 
 /**
@@ -40,10 +57,10 @@ export function readFile(path: string): Promise<fs.ReadStream> {
  * Delete an existing file from a filepath
  * @param {String} path filepath
  */
-export function deleteFile(path: string): void {
-  try {
-    return fs.unlinkSync(path);
-  } catch (error) {
-    throw new BadRequestError(errors.FILE_READ_ERROR);
-  }
+export function deleteFile(path: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    fs.unlink(path, (error) => {
+      error ? reject(new BadRequestError(errors.FILE_READ_ERROR)) : resolve();
+    });
+  });
 }
