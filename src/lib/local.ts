@@ -4,7 +4,7 @@ import { errors } from '../config/error-config';
 
 export function exists(path: string): Promise<boolean> {
   return new Promise((resolve) => {
-    fs.exists(path, found => found ? resolve(true) : resolve(false));
+    return fs.exists(path, found => found ? resolve(true) : resolve(false));
   });
 }
 
@@ -60,7 +60,7 @@ export function readFile(path: string): Promise<fs.ReadStream> {
 export function deleteFile(path: string): Promise<void> {
   return new Promise((resolve, reject) => {
     fs.unlink(path, (error) => {
-      return error ? reject(new BadRequestError(errors.FILE_READ_ERROR)) : resolve();
+      error ? reject(new BadRequestError(errors.FILE_READ_ERROR)) : resolve();
     });
   });
 }
