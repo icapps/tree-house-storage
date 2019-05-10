@@ -20,7 +20,7 @@
     "build"
   ],
   "dependencies": {
-    "aws-sdk": "~2.452.0",
+    "aws-sdk": "~2.453.0",
     "multer": "~1.4.1",
     "tree-house": "~3.4.3",
     "tree-house-errors": "~1.2.3"
