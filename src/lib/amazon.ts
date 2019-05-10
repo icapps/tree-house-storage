@@ -1,5 +1,7 @@
 import * as S3 from 'aws-sdk/clients/s3';
 import { BadRequestError } from 'tree-house-errors';
+import { Readable } from 'stream';
+import { Blob } from 'aws-sdk/lib/dynamodb/document_client';
 import { errors } from '../config/error-config';
 import { readFile } from './local';
 
@@ -15,6 +17,29 @@ export function createClient(clientOptions: IClientS3Options): S3 {
     accessKeyId,
     secretAccessKey,
   });
+}
+
+/**
+ * Retrieve a file from S3
+ * @param {Object} client
+ * @param {String} bucket
+ * @param {String} key
+ * @returns {Object}
+ */
+export async function getFile(client: S3, bucket: string, key: string): Promise<IDownloadS3Result> {
+  try {
+    const params: S3.GetObjectRequest = {
+      Bucket: bucket,
+      Key: key,
+    };
+
+    const result = await client.getObject(params).promise();
+    return {
+      body: result.Body,
+    };
+  } catch (error) {
+    throw new BadRequestError(errors.FILE_DOWNLOAD_ERROR, { message: error.message });
+  }
 }
 
 /**
@@ -51,6 +76,25 @@ export async function uploadFile(client: S3, options: IUploadS3Options): Promise
 }
 
 /**
+ * Remove a file from S3 storage
+ * @param {Object} client
+ * @param {String} bucket
+ * @param {String} key
+ * @returns {Object}
+ */
+export async function removeFile(client: S3, bucket: string, key: string): Promise<S3.DeleteObjectOutput> {
+  try {
+    const params = {
+      Bucket: bucket,
+      Key: key,
+    };
+    return await client.deleteObject(params).promise();
+  } catch (error) {
+    throw new BadRequestError(errors.FILE_REMOVE_ERROR, { message: error.message });
+  }
+}
+
+/**
  * Get a pre-signed url
  * @param {Object} client existing s3 client
  * @param {Object} options s3 options
@@ -76,7 +120,7 @@ export async function getPresignedUrl(client: S3, options: IPresignedS3Options):
  * @param {Object} options s3 options
  * @returns {boolean} resource exists or not
  */
-export async function resourceExists(client: S3, params: {bucket: string, key: string}): Promise<boolean> {
+export async function resourceExists(client: S3, params: { bucket: string, key: string }): Promise<boolean> {
   const { bucket, key } = params;
   return new Promise((resolve, _reject) => {
     client.headObject({ Bucket: bucket, Key: key }, (err, _data) => {
@@ -105,6 +149,10 @@ export interface IUploadS3Result {
   url: string;
   bucket: string;
   key: string;
+}
+
+export interface IDownloadS3Result {
+  body: string | Buffer | Uint8Array | Blob | Readable;
 }
 
 export interface IPresignedS3Options {
