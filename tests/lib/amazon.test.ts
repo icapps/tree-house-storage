@@ -56,7 +56,7 @@ describe('amazon', () => {
       });
 
       await uploadFile(awsClient, {
-        filePath: './uploadtest.txt',
+        path: './uploadtest.txt',
         contentType: 'image/png',
         bucket: 'bucket',
         key: 'key',
@@ -74,7 +74,7 @@ describe('amazon', () => {
       });
 
       await uploadFile(awsClient, {
-        filePath: './uploadtest.txt',
+        path: './uploadtest.txt',
         contentType: 'image/png',
         bucket: 'bucket',
         key: 'key',
@@ -106,7 +106,7 @@ describe('amazon', () => {
       expect.assertions(NUM_ERROR_CHECKS);
       try {
         await uploadFile(awsClient, {
-          filePath: './uploadtest.txt',
+          path: './uploadtest.txt',
           contentType: 'image/png',
           bucket: 'bucket',
           key: 'key',

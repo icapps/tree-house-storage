@@ -120,7 +120,7 @@ Upload a file to S3
 import { amazon } from '@icapps/tree-house-storage'
 
 const options = {
-  filePath: 'localPath/localFile.png',
+  path: 'localPath/localFile.png',
   content: 'fileContent ...',
   name: uuid.v4(),
   contentType: 'image/png',
