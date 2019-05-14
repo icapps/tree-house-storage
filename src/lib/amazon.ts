@@ -50,12 +50,13 @@ export async function getFile(client: S3, bucket: string, key: string): Promise<
  */
 export async function uploadFile(client: S3, options: IUploadS3Options): Promise<IUploadS3Result> {
   try {
-    const fileStream = await readFile(options.path);
+    let fileStream;
+    if (options.path) fileStream = await readFile(options.path);
 
     const params: S3.PutObjectRequest = {
       Bucket: options.bucket,
       Key: options.key,
-      Body: fileStream,
+      Body: fileStream || options.content,
       ContentType: options.contentType,
     };
 
@@ -138,11 +139,12 @@ export interface IClientS3Options {
 }
 
 export interface IUploadS3Options {
-  path: string;
   contentType: string;
   bucket: string;
   key: string;
+  content?: string;
   encryption?: string;
+  path?: string;
 }
 
 export interface IUploadS3Result {

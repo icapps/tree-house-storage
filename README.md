@@ -121,6 +121,7 @@ import { amazon } from '@icapps/tree-house-storage'
 
 const options = {
   path: 'localPath/localFile.png',
+  content: 'fileContent ...',
   name: uuid.v4(),
   contentType: 'image/png',
   bucket: 's3bucketName',

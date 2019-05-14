@@ -48,7 +48,7 @@ describe('amazon', () => {
       fs.unlinkSync('./uploadtest.txt');
     });
 
-    it('Should succesfully upload the file to Amazon S3 with encryption', async () => {
+    it('Should succesfully upload the file from path to Amazon S3 with encryption', async () => {
       s3PromiseMock.mockResolvedValueOnce({
         Location: 'http://s3.file.com',
         Bucket: 'bucket',
@@ -66,7 +66,7 @@ describe('amazon', () => {
       expect(s3PromiseMock).toBeCalledTimes(1);
     });
 
-    it('Should succesfully upload the file to Amazon S3 without encryption', async () => {
+    it('Should succesfully upload the file from path to Amazon S3 without encryption', async () => {
       s3PromiseMock.mockResolvedValueOnce({
         Location: 'http://s3.file.com',
         Bucket: 'bucket',
@@ -75,6 +75,23 @@ describe('amazon', () => {
 
       await uploadFile(awsClient, {
         path: './uploadtest.txt',
+        contentType: 'image/png',
+        bucket: 'bucket',
+        key: 'key',
+      });
+
+      expect(s3PromiseMock).toBeCalledTimes(1);
+    });
+
+    it('Should succesfully upload the file content to Amazon S3 without encryption', async () => {
+      s3PromiseMock.mockResolvedValueOnce({
+        Location: 'http://s3.file.com',
+        Bucket: 'bucket',
+        Key: 'key',
+      });
+
+      await uploadFile(awsClient, {
+        content: 'fileContent blabla',
         contentType: 'image/png',
         bucket: 'bucket',
         key: 'key',
