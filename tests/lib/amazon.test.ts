@@ -1,12 +1,8 @@
 import * as fs from 'fs';
 import * as httpStatus from 'http-status';
-<<<<<<< HEAD
-import { createClient, uploadFile, getPresignedUrl, resourceExists } from '../../src/lib/amazon';
 import { BadRequestError } from '@icapps/tree-house-errors';
-=======
+
 import { createClient, uploadFile, getPresignedUrl, resourceExists, removeFile, getFile } from '../../src/lib/amazon';
-import { BadRequestError } from 'tree-house-errors';
->>>>>>> 18a5714afdde12871f8439223886adafc05931e2
 import { errors } from '../../src/config/error-config';
 import { validateError, NUM_ERROR_CHECKS } from '../_helpers/util';
 
