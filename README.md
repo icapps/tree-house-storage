@@ -36,7 +36,7 @@ const options = {
   destination: 'uploads',
   fileSize: 12000,
   allowedFileTypes: ['image/png', 'image/jpg'],
-  
+
   // Optional Joi schema validation for other body data
   validator: {
     schema: joiSchema,
@@ -121,13 +121,34 @@ import { amazon } from '@icapps/tree-house-storage'
 
 const options = {
   path: 'localPath/localFile.png',
+  content: 'fileContent ...',
   name: uuid.v4(),
   contentType: 'image/png',
   bucket: 's3bucketName',
   key: 's3KeyName',
   encryption: 'AE-256', // Optional encryption (this will enable server encryption on S3)
 };
-const { location, bucket, key } = amazon.uploadFile(client, options);
+const { location, bucket, key } = await amazon.uploadFile(client, options);
+```
+
+### getFile(client, bucket, key)
+
+Retrieve a file from S3
+
+```javascript
+import { amazon } from '@icapps/tree-house-storage'
+
+const { body } = await amazon.getFile(client, bucket, key);
+```
+
+### removeFile(client, bucket, key)
+
+Remove a file from S3
+
+```javascript
+import { amazon } from '@icapps/tree-house-storage'
+
+await amazon.removeFile(client, bucket, key);
 ```
 
 ### getPresignedUrl(client, options)
@@ -142,7 +163,7 @@ const options = {
   key: 's3KeyName',
   expires: 1600, // Optional expiration time
 };
-const { location, bucket, key } = amazon.getPresignedUrl(client, options);
+const { location, bucket, key } = await amazon.getPresignedUrl(client, options);
 ```
 
 ## Tests

@@ -1,6 +1,6 @@
 {
   "name": "@icapps/tree-house-storage",
-  "version": "1.1.0",
+  "version": "1.3.0",
   "description": "Tree House Storage",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "@icapps/tree-house-errors": "^1.3.0",
-    "aws-sdk": "~2.438.0",
+    "aws-sdk": "^2.438.0",
     "express-validation": "~1.0.2",
     "multer": "~1.4.1"
   },
@@ -29,21 +29,21 @@
     "@types/cors": "^2.8.4",
     "@types/express-brute": "0.0.37",
     "@types/helmet": "0.0.43",
-    "@types/jest": "^24.0.11",
+    "@types/jest": "^24.0.15",
     "@types/joi": "^14.3.2",
     "@types/multer": "^1.3.7",
-    "@types/redis": "^2.8.12",
-    "coveralls": "^3.0.3",
+    "@types/redis": "^2.8.13",
+    "coveralls": "^3.0.4",
     "http-status": "^1.3.2",
     "jest": "^24.5.0",
-    "node-mocks-http": "^1.7.3",
-    "np": "^4.0.2",
+    "node-mocks-http": "^1.7.6",
+    "np": "^5.0.3",
     "pre-commit": "^1.2.2",
     "supertest": "^4.0.2",
     "ts-jest": "^24.0.1",
-    "tslint": "^5.14.0",
+    "tslint": "^5.17.0",
     "tslint-config-airbnb": "^5.11.1",
-    "typescript": "^3.4.1"
+    "typescript": "^3.5.2"
   },
   "engines": {
     "node": ">=6.0.0"

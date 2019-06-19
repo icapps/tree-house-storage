@@ -1,7 +1,12 @@
 import * as fs from 'fs';
 import * as httpStatus from 'http-status';
+<<<<<<< HEAD
 import { createClient, uploadFile, getPresignedUrl, resourceExists } from '../../src/lib/amazon';
 import { BadRequestError } from '@icapps/tree-house-errors';
+=======
+import { createClient, uploadFile, getPresignedUrl, resourceExists, removeFile, getFile } from '../../src/lib/amazon';
+import { BadRequestError } from 'tree-house-errors';
+>>>>>>> 18a5714afdde12871f8439223886adafc05931e2
 import { errors } from '../../src/config/error-config';
 import { validateError, NUM_ERROR_CHECKS } from '../_helpers/util';
 
@@ -15,6 +20,8 @@ describe('amazon', () => {
     upload: jest.fn(() => ({ promise: s3PromiseMock })),
     getSignedUrl: jest.fn(() => (result)),
     headObject: mockMetaCallback,
+    deleteObject: jest.fn(() => ({ promise: s3PromiseMock })),
+    getObject: jest.fn(() => ({ promise: s3PromiseMock })),
   };
 
   afterEach(() => {
@@ -46,7 +53,7 @@ describe('amazon', () => {
       fs.unlinkSync('./uploadtest.txt');
     });
 
-    it('Should succesfully upload the file to Amazon S3', async () => {
+    it('Should succesfully upload the file from path to Amazon S3 with encryption', async () => {
       s3PromiseMock.mockResolvedValueOnce({
         Location: 'http://s3.file.com',
         Bucket: 'bucket',
@@ -64,8 +71,42 @@ describe('amazon', () => {
       expect(s3PromiseMock).toBeCalledTimes(1);
     });
 
+    it('Should succesfully upload the file from path to Amazon S3 without encryption', async () => {
+      s3PromiseMock.mockResolvedValueOnce({
+        Location: 'http://s3.file.com',
+        Bucket: 'bucket',
+        Key: 'key',
+      });
+
+      await uploadFile(awsClient, {
+        path: './uploadtest.txt',
+        contentType: 'image/png',
+        bucket: 'bucket',
+        key: 'key',
+      });
+
+      expect(s3PromiseMock).toBeCalledTimes(1);
+    });
+
+    it('Should succesfully upload the file content to Amazon S3 without encryption', async () => {
+      s3PromiseMock.mockResolvedValueOnce({
+        Location: 'http://s3.file.com',
+        Bucket: 'bucket',
+        Key: 'key',
+      });
+
+      await uploadFile(awsClient, {
+        content: 'fileContent blabla',
+        contentType: 'image/png',
+        bucket: 'bucket',
+        key: 'key',
+      });
+
+      expect(s3PromiseMock).toBeCalledTimes(1);
+    });
+
     it('Should throw a custom error', async () => {
-      s3PromiseMock.mockRejectedValueOnce(<any> Error('random error occured'));
+      s3PromiseMock.mockRejectedValueOnce(<any>Error('random error occured'));
 
       expect.assertions(NUM_ERROR_CHECKS);
       try {
@@ -112,6 +153,53 @@ describe('amazon', () => {
 
       const result = await resourceExists(awsClient, { bucket: 'bucket', key: 'key' });
       expect(result).toEqual(false);
+    });
+  });
+
+  describe('getFile', () => {
+    it('Should get a file from AWS S3 succesfully', async () => {
+      s3PromiseMock.mockResolvedValueOnce(<any>{
+        AcceptRanges: 'bytes',
+        ContentLength: 92090,
+        ETag: '"afcfa009efd0f4324571f5b048ea9cee"',
+        ContentType: 'application/pdf',
+        Metadata: {},
+        Body: new Buffer('myBufferContent', 'utf-8'),
+      });
+
+      await getFile(awsClient, 'com.icapps.inscribo', 'test');
+
+      expect(s3PromiseMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should throw error when AWS client throws an error', async () => {
+      s3PromiseMock.mockRejectedValueOnce(new Error('S3 Error!'));
+      expect.assertions(2);
+      try {
+        await getFile(awsClient, 'com.icapps.inscribo', 'test');
+      } catch (error) {
+        expect(s3PromiseMock).toHaveBeenCalledTimes(1);
+        expect(error).toBeInstanceOf(Error);
+      }
+    });
+  });
+
+  describe('removeFile', () => {
+    it('Should succesfully remove a file', async () => {
+      await removeFile(awsClient, 'com.icapps.inscribo', 'test');
+
+      expect(s3PromiseMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should throw error when AWS client throws an error', async () => {
+      s3PromiseMock.mockRejectedValueOnce(new Error('S3 Error!'));
+      expect.assertions(2);
+      try {
+        await removeFile(awsClient, 'com.icapps.inscribo', 'test');
+      } catch (error) {
+        expect(s3PromiseMock).toHaveBeenCalledTimes(1);
+        expect(error).toBeInstanceOf(Error);
+      }
     });
   });
 });
