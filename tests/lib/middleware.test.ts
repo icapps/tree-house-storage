@@ -1,10 +1,11 @@
 import * as httpMocks from 'node-mocks-http';
 import * as httpStatus from 'http-status';
 import * as Joi from 'joi';
+import { ApiError } from '@icapps/tree-house-errors';
+
 import { multipartUpload, validateFile, MultipartOptions } from '../../src/lib/middleware';
 import { validateError, NUM_ERROR_CHECKS } from '../_helpers/util';
 import { errors } from '../../src/config/error-config';
-import { ApiError } from 'tree-house-errors';
 
 describe('middleware', () => {
   describe('multipartUpload', () => {

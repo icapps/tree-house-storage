@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as httpStatus from 'http-status';
 import { createClient, uploadFile, getPresignedUrl, resourceExists } from '../../src/lib/amazon';
-import { BadRequestError } from 'tree-house-errors';
+import { BadRequestError } from '@icapps/tree-house-errors';
 import { errors } from '../../src/config/error-config';
 import { validateError, NUM_ERROR_CHECKS } from '../_helpers/util';
 

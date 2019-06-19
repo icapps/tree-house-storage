@@ -1,5 +1,5 @@
 import * as S3 from 'aws-sdk/clients/s3';
-import { BadRequestError } from 'tree-house-errors';
+import { BadRequestError } from '@icapps/tree-house-errors';
 import { errors } from '../config/error-config';
 import { readFile } from './local';
 

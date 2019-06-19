@@ -1,4 +1,4 @@
-import { errors as defaults, ErrorType } from 'tree-house-errors';
+import { errors as defaults, ErrorType } from '@icapps/tree-house-errors';
 
 const asType = <T extends { [key: string]: ErrorType }>(arg: T): T  => arg;
 

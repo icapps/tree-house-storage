@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { BadRequestError } from 'tree-house-errors';
+import { BadRequestError } from '@icapps/tree-house-errors';
 import { errors } from '../config/error-config';
 
 export function exists(path: string): Promise<boolean> {

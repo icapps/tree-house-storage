@@ -1,7 +1,24 @@
 import * as multer from 'multer';
-import { validateSchema } from 'tree-house';
-import { BadRequestError } from 'tree-house-errors';
+import * as expressValidation from 'express-validation';
+import { BadRequestError } from '@icapps/tree-house-errors';
+
 import { errors } from '../config/error-config';
+
+/**
+ * Validate a Joi schema via express-validation
+ */
+export function validateSchema(schema: any, options = {}) {
+  return function (req: Express.Request, res: Express.Response | any, next: Function) {
+    const allOptions = {
+      allowUnknownBody: false,
+      allowUnknownParams: false,
+      ...options,
+    };
+
+    expressValidation.options(allOptions);
+    expressValidation(schema)(req, res, next);
+  };
+}
 
 /**
  * Middleware function using multer with extra file filter options

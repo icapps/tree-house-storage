@@ -1,4 +1,4 @@
-import { ApiError } from 'tree-house-errors';
+import { ApiError } from '@icapps/tree-house-errors';
 
 export const NUM_ERROR_CHECKS = 4;
 
