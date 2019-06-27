@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as httpStatus from 'http-status';
 import { BadRequestError } from '@icapps/tree-house-errors';
 
-import { createClient, uploadFile, getPresignedUrl, resourceExists, removeFile, getFile } from '../../src/lib/amazon';
+import { createClient, uploadFile, getPresignedUrl, resourceExists, removeFile, getFile, getUploadPresignedUrl } from '../../src/lib/amazon';
 import { errors } from '../../src/config/error-config';
 import { validateError, NUM_ERROR_CHECKS } from '../_helpers/util';
 
@@ -15,6 +15,7 @@ describe('amazon', () => {
   const awsClient = <any>{
     upload: jest.fn(() => ({ promise: s3PromiseMock })),
     getSignedUrl: jest.fn(() => (result)),
+    getUploadPresignedUrl: jest.fn(() => (result)),
     headObject: mockMetaCallback,
     deleteObject: jest.fn(() => ({ promise: s3PromiseMock })),
     getObject: jest.fn(() => ({ promise: s3PromiseMock })),
@@ -121,7 +122,12 @@ describe('amazon', () => {
 
   describe('getPresignedUrl', () => {
     it('Should succesfully return the pre-signed url', async () => {
-      const resourceUrl = await getPresignedUrl(awsClient, { bucket: 'bucket', key: 'key' });
+      const resourceUrl = await getUploadPresignedUrl(awsClient, { bucket: 'bucket', key: 'key' });
+      expect(resourceUrl).toEqual(result);
+    });
+
+    it('Should succesfully return the create object pre-signed url', async () => {
+      const resourceUrl = await getUploadPresignedUrl(awsClient, { bucket: 'bucket', key: 'key' });
       expect(resourceUrl).toEqual(result);
     });
 
