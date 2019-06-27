@@ -166,6 +166,23 @@ const options = {
 const { location, bucket, key } = await amazon.getPresignedUrl(client, options);
 ```
 
+### getUploadPresignedUrl(client, options)
+
+Gets a pre-signed upload url for an S3 resource
+
+```javascript
+import { amazon } from '@icapps/tree-house-storage'
+
+const options = {
+  bucket: 's3bucketName',
+  key: 's3KeyName',
+  expires: 1600, // Optional expiration time
+  contentType: 'image/png' // Optional but best practice to include this
+};
+
+const url = await amazon.getUploadPresignedUrl(client, options);
+```
+
 ## Tests
 
 All tests are written using Jest. Check out the documentation [here](https://jestjs.io/docs/en/getting-started) for more information.

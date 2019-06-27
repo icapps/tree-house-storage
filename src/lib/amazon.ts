@@ -115,6 +115,26 @@ export async function getPresignedUrl(client: S3, options: IPresignedS3Options):
 }
 
 /**
+ * Post presigned url
+ * @param {Object} client existing s3 client
+ * @param {Object} options s3 options
+ * @returns {String} presigned url
+ */
+export async function getUploadPresignedUrl(client: S3, options: IPresignedS3Options): Promise<string> {
+  try {
+    const params = {
+      Bucket: options.bucket,
+      Key: options.key,
+      Expires: options.expires,
+      ContentType: options.contentType,
+    };
+
+    return await client.getSignedUrl('putObject', params);
+  } catch (error) {
+    throw new BadRequestError(errors.FILE_PRESIGNED_URL_ERROR, { message: error.message });
+  }
+}
+/**
  * Checks if the resource exists on the S3 bucket
  * @param {Object} client existing s3 client
  * @param {Object} options s3 options
@@ -160,4 +180,5 @@ export interface IPresignedS3Options {
   bucket: string;
   key: string;
   expires?: number;
+  contentType?: string;
 }
