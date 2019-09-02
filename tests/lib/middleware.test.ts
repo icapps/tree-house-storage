@@ -16,9 +16,16 @@ describe('middleware', () => {
       },
     });
     const file: Express.Multer.File = {
-      fieldname: 'file', originalname: 'name', encoding: 'utf8',
-      size: 80, destination: '/tmp', mimetype: 'application/xml', filename: 'test.xml',
-      path: '/', buffer: <any> '',
+      location: '',
+      fieldname: 'file',
+      originalname: 'name',
+      encoding: 'utf8',
+      size: 80,
+      destination: '/tmp',
+      mimetype: 'application/xml',
+      filename: 'test.xml',
+      path: '/',
+      buffer: <any>'',
     };
 
     it('Should succesfully create a multipart upload middleware', () => {
