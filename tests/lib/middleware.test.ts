@@ -16,7 +16,6 @@ describe('middleware', () => {
       },
     });
     const file: Express.Multer.File = {
-      location: '',
       fieldname: 'file',
       originalname: 'name',
       encoding: 'utf8',
