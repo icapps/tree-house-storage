@@ -25,6 +25,7 @@ describe('middleware', () => {
       filename: 'test.xml',
       path: '/',
       buffer: <any>'',
+      location: '',
     };
 
     it('Should succesfully create a multipart upload middleware', () => {

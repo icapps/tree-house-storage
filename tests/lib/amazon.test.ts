@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as httpStatus from 'http-status';
 import { BadRequestError } from '@icapps/tree-house-errors';
 
-import { createClient, uploadFile, getPresignedUrl, resourceExists, removeFile, getFile, getUploadPresignedUrl } from '../../src/lib/amazon';
+import { createClient, uploadFile, getPresignedUrl, resourceExists, removeFile, getFile, getUploadPresignedUrl, getMetaData } from '../../src/lib/amazon';
 import { errors } from '../../src/config/error-config';
 import { validateError, NUM_ERROR_CHECKS } from '../_helpers/util';
 
@@ -202,6 +202,15 @@ describe('amazon', () => {
         expect(s3PromiseMock).toHaveBeenCalledTimes(1);
         expect(error).toBeInstanceOf(Error);
       }
+    });
+  });
+
+  describe('getMetaData', () => {
+    it('Should return the meta data of an S3 object', async () => {
+      mockMetaCallback.mockImplementationOnce((_params, cb) => cb(null, 'data'));
+
+      const result = await getMetaData(awsClient, { bucket: 'bucket', key: 'key' });
+      expect(result).toEqual('data');
     });
   });
 });
