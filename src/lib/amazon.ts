@@ -154,13 +154,13 @@ export async function resourceExists(client: S3, params: { bucket: string, key: 
  * Get the meta data of an S3 object
  * @param {Object} client existing s3 client
  * @param {Object} options s3 options
- * @returns {boolean} resource exists or not
+ * @returns {Object}
  */
 export async function getMetaData(client: S3, params: { bucket: string, key: string }): Promise<S3.HeadObjectOutput> {
   const { bucket, key } = params;
   return new Promise((resolve, reject) => {
     client.headObject({ Bucket: bucket, Key: key }, (err, data) => {
-      if (err) return reject(data);
+      if (err) return reject(err);
       return resolve(data);
     });
   });
