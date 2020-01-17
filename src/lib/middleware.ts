@@ -6,6 +6,8 @@ import { errors } from '../config/error-config';
 
 /**
  * Validate a Joi schema via express-validation
+ * @param {any} schema
+ * @param {Object} options
  */
 export function validateSchema(schema: any, options = {}) {
   return function (req: Express.Request, res: Express.Response | any, next: Function) {
