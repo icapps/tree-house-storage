@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "@icapps/tree-house-errors": "~2.0.1",
-    "aws-sdk": "~2.605.0",
+    "aws-sdk": "~2.654.0",
     "express-validation": "~1.0.2",
     "multer": "~1.4.2"
   },
