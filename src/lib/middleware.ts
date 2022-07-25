@@ -1,4 +1,5 @@
 import * as multer from 'multer';
+import * as express from 'express';
 import * as expressValidation from 'express-validation';
 import { BadRequestError } from '@icapps/tree-house-errors';
 
@@ -9,16 +10,9 @@ import { errors } from '../config/error-config';
  * @param {any} schema
  * @param {Object} options
  */
-export function validateSchema(schema: any, options = {}) {
-  return function (req: Express.Request, res: Express.Response | any, next: Function) {
-    const allOptions = {
-      allowUnknownBody: false,
-      allowUnknownParams: false,
-      ...options,
-    };
-
-    expressValidation.options(allOptions);
-    expressValidation(schema)(req, res, next);
+export function validateSchema(schema: expressValidation.schema, options: expressValidation.EvOptions = {}) {
+  return async function (req: express.Request, res: express.Response, next: express.NextFunction) {
+    await expressValidation.validate(schema, options)(req, res, next);
   };
 }
 
@@ -27,7 +21,7 @@ export function validateSchema(schema: any, options = {}) {
  * @param {Object} options multipart options
  * @returns {Object} multer instance
  */
-export function multipartUpload(options: MultipartOptions): multer.Instance {
+export function multipartUpload(options: MultipartOptions): multer.Multer {
   return multer({
     dest: options.destination,
     limits: {
@@ -44,13 +38,22 @@ export function multipartUpload(options: MultipartOptions): multer.Instance {
  * @callback multerFileFiltercb
  * @param options- multipart options
  */
-export function validateFile(req: Express.Request, file: Express.Multer.File, next: IMulterFileFilterCb, options: MultipartOptions): void {
+export async function validateFile(
+  req: express.Request,
+  file: Express.Multer.File,
+  next: IMulterFileFilterCb,
+  options: MultipartOptions,
+): Promise<void> {
   try {
     // Use validation middleware to check body schema
     if (options.validator) {
-      validateSchema(options.validator.schema, options.validator.options)(req, {}, (error: Error) => {
-        if (error) throw error;
-      });
+      await validateSchema(options.validator.schema, options.validator.options)(
+        req,
+        {} as express.Response,
+        (error: any) => {
+          if (error) throw error;
+        },
+      );
     }
 
     if (!options.allowedFileTypes.includes(file.mimetype)) throw new BadRequestError(errors.FILE_UPLOAD_ERROR);
@@ -68,7 +71,7 @@ export interface MultipartOptions {
   fileSize: number;
   allowedFileTypes: string[];
   validator?: {
-    schema: any;
-    options?: any;
+    schema: expressValidation.schema;
+    options?: expressValidation.EvOptions;
   };
 }

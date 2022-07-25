@@ -84,7 +84,9 @@ describe('local', () => {
     });
 
     it('Should throw an error when invalid folder was provided', async () => {
-      const fsSpy = jest.spyOn(fs, 'writeFile').mockImplementationOnce((_name, _content, cb) => cb(new Error('ErrorDuringWrite')));
+      const fsSpy = jest
+        .spyOn(fs, 'writeFile')
+        .mockImplementationOnce((_name, _content, cb) => cb(new Error('ErrorDuringWrite')));
 
       expect.assertions(2);
       try {

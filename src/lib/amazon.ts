@@ -140,7 +140,7 @@ export async function getUploadPresignedUrl(client: S3, options: IPresignedS3Opt
  * @param {Object} options s3 options
  * @returns {boolean} resource exists or not
  */
-export async function resourceExists(client: S3, params: { bucket: string, key: string }): Promise<boolean> {
+export async function resourceExists(client: S3, params: { bucket: string; key: string }): Promise<boolean> {
   const { bucket, key } = params;
   return new Promise((resolve, _reject) => {
     client.headObject({ Bucket: bucket, Key: key }, (err, _data) => {
@@ -156,7 +156,7 @@ export async function resourceExists(client: S3, params: { bucket: string, key: 
  * @param {Object} options s3 options
  * @returns {Object}
  */
-export async function getMetaData(client: S3, params: { bucket: string, key: string }): Promise<S3.HeadObjectOutput> {
+export async function getMetaData(client: S3, params: { bucket: string; key: string }): Promise<S3.HeadObjectOutput> {
   const { bucket, key } = params;
   return new Promise((resolve, reject) => {
     client.headObject({ Bucket: bucket, Key: key }, (err, data) => {
