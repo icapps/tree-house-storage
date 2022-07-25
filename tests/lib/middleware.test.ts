@@ -1,7 +1,6 @@
 import * as httpMocks from 'node-mocks-http';
 import * as httpStatus from 'http-status';
 import * as Joi from 'joi';
-import { ApiError } from '@icapps/tree-house-errors';
 
 import { multipartUpload, validateFile, MultipartOptions } from '../../src/lib/middleware';
 import { validateError, NUM_ERROR_CHECKS } from '../_helpers/util';
@@ -25,7 +24,7 @@ describe('middleware', () => {
       filename: 'test.xml',
       path: '/',
       buffer: <any>'',
-      location: '',
+      stream: <any>'',
     };
 
     it('Should succesfully create a multipart upload middleware', () => {
@@ -47,7 +46,7 @@ describe('middleware', () => {
         allowedFileTypes: ['application/xml'],
       };
 
-      validateFile(request, file, () => { }, options);
+      validateFile(request, file, () => {}, options);
     });
 
     it('Should throw an error when the file type is not supported', () => {
@@ -59,7 +58,7 @@ describe('middleware', () => {
 
       expect.assertions(NUM_ERROR_CHECKS);
 
-      const callbackFunction = (error: ApiError) => {
+      const callbackFunction = (error: Error | null) => {
         validateError(error, httpStatus.BAD_REQUEST, errors.FILE_UPLOAD_ERROR.code, errors.FILE_UPLOAD_ERROR.message);
       };
 
@@ -72,12 +71,12 @@ describe('middleware', () => {
         destination: '/',
         allowedFileTypes: ['application/xml'],
         validator: {
-          schema: { body: { name: Joi.string().required() } },
+          schema: { body: Joi.object({ name: Joi.string().required() }) },
         },
       };
 
       expect.assertions(1);
-      const callbackFunction = (error: ApiError) => {
+      const callbackFunction = (error: Error | null) => {
         expect(error).toEqual(null);
       };
 
@@ -90,13 +89,15 @@ describe('middleware', () => {
         destination: '/',
         allowedFileTypes: ['application/xml'],
         validator: {
-          schema: { body: { anotherKey: Joi.string().required() } },
+          schema: {
+            body: Joi.object({ anotherKey: Joi.string().required() }),
+          },
         },
       };
 
       expect.assertions(1);
       const callbackFunction = (error: any) => {
-        expect(error.status).toEqual(httpStatus.BAD_REQUEST);
+        expect(error.statusCode).toEqual(httpStatus.BAD_REQUEST);
       };
 
       validateFile(request, file, callbackFunction, options);

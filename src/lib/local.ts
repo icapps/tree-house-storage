@@ -4,7 +4,7 @@ import { errors } from '../config/error-config';
 
 export function exists(path: string): Promise<boolean> {
   return new Promise((resolve) => {
-    return fs.exists(path, found => found ? resolve(true) : resolve(false));
+    return fs.exists(path, (found) => (found ? resolve(true) : resolve(false)));
   });
 }
 
@@ -12,12 +12,12 @@ export function exists(path: string): Promise<boolean> {
  * Check if folder exists and create if not
  * @param {String} path filepath
  */
-export async function createIfNotExists(path: string) {
+export async function createIfNotExists(path: string): Promise<void> {
   const existingPath = await exists(path);
 
   return new Promise((resolve, reject) => {
     if (!existingPath) {
-      return fs.mkdir(path, error => error ? reject(error) : resolve());
+      return fs.mkdir(path, (error) => (error ? reject(error) : resolve()));
     }
     resolve();
   });

@@ -166,7 +166,7 @@ describe('amazon', () => {
         ETag: '"afcfa009efd0f4324571f5b048ea9cee"',
         ContentType: 'application/pdf',
         Metadata: {},
-        Body: new Buffer('myBufferContent', 'utf-8'),
+        Body: Buffer.from('myBufferContent', 'utf-8'),
       });
 
       await getFile(awsClient, 'com.icapps.inscribo', 'test');
